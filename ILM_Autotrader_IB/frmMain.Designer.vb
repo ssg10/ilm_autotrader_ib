@@ -55,6 +55,10 @@ Partial Class frmMain
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Label10 = New System.Windows.Forms.Label()
+        Me.lbRealTimeHeartBeat = New System.Windows.Forms.ListBox()
+        Me.lbAccountInfo = New System.Windows.Forms.ListBox()
+        Me.btnAccountInfo = New System.Windows.Forms.Button()
+        Me.btnAccSummary = New System.Windows.Forms.Button()
         CType(Me.AxTws1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -137,7 +141,7 @@ Partial Class frmMain
         Me.ShapeContainer1.Margin = New System.Windows.Forms.Padding(0)
         Me.ShapeContainer1.Name = "ShapeContainer1"
         Me.ShapeContainer1.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.RectangleShape1, Me.LineShape2, Me.LineShape1})
-        Me.ShapeContainer1.Size = New System.Drawing.Size(1010, 632)
+        Me.ShapeContainer1.Size = New System.Drawing.Size(1071, 632)
         Me.ShapeContainer1.TabIndex = 8
         Me.ShapeContainer1.TabStop = False
         '
@@ -338,11 +342,49 @@ Partial Class frmMain
         Me.Label10.TabIndex = 29
         Me.Label10.Text = "S, D, W, M, Y"
         '
+        'lbRealTimeHeartBeat
+        '
+        Me.lbRealTimeHeartBeat.FormattingEnabled = True
+        Me.lbRealTimeHeartBeat.Location = New System.Drawing.Point(31, 180)
+        Me.lbRealTimeHeartBeat.Name = "lbRealTimeHeartBeat"
+        Me.lbRealTimeHeartBeat.Size = New System.Drawing.Size(243, 134)
+        Me.lbRealTimeHeartBeat.TabIndex = 30
+        '
+        'lbAccountInfo
+        '
+        Me.lbAccountInfo.FormattingEnabled = True
+        Me.lbAccountInfo.Location = New System.Drawing.Point(309, 180)
+        Me.lbAccountInfo.Name = "lbAccountInfo"
+        Me.lbAccountInfo.Size = New System.Drawing.Size(232, 264)
+        Me.lbAccountInfo.TabIndex = 31
+        '
+        'btnAccountInfo
+        '
+        Me.btnAccountInfo.Location = New System.Drawing.Point(309, 113)
+        Me.btnAccountInfo.Name = "btnAccountInfo"
+        Me.btnAccountInfo.Size = New System.Drawing.Size(106, 33)
+        Me.btnAccountInfo.TabIndex = 32
+        Me.btnAccountInfo.Text = "Get Acc Info"
+        Me.btnAccountInfo.UseVisualStyleBackColor = True
+        '
+        'btnAccSummary
+        '
+        Me.btnAccSummary.Location = New System.Drawing.Point(444, 113)
+        Me.btnAccSummary.Name = "btnAccSummary"
+        Me.btnAccSummary.Size = New System.Drawing.Size(97, 36)
+        Me.btnAccSummary.TabIndex = 33
+        Me.btnAccSummary.Text = "Get Acc Summary"
+        Me.btnAccSummary.UseVisualStyleBackColor = True
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1010, 632)
+        Me.ClientSize = New System.Drawing.Size(1071, 632)
+        Me.Controls.Add(Me.btnAccSummary)
+        Me.Controls.Add(Me.btnAccountInfo)
+        Me.Controls.Add(Me.lbAccountInfo)
+        Me.Controls.Add(Me.lbRealTimeHeartBeat)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.Label8)
@@ -412,5 +454,9 @@ Partial Class frmMain
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents Label9 As System.Windows.Forms.Label
     Friend WithEvents Label10 As System.Windows.Forms.Label
+    Friend WithEvents lbRealTimeHeartBeat As System.Windows.Forms.ListBox
+    Friend WithEvents lbAccountInfo As System.Windows.Forms.ListBox
+    Friend WithEvents btnAccountInfo As System.Windows.Forms.Button
+    Friend WithEvents btnAccSummary As System.Windows.Forms.Button
 
 End Class

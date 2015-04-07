@@ -4,6 +4,11 @@ Public Class frmMain
     Dim IBCONNECTION_NUMBER As Integer = 99 ' Must be unique number or IB will not connect us
     Dim g_connecting_inprogress As Boolean = False
     Public HISTORICAL_TICKER_ID1 As Integer = 10
+    Public RT_TICKER_ID_START As Integer = 20
+    Public RT_TICKER_ID_END As Integer = 40
+
+    Public g_accounts As String() = {"U129661", "U1465027"}
+    Public g_accounts_requpdate_flag As Integer = 0
 
     Private m_options As List(Of TWSLib.ITagValue)
 
@@ -68,7 +73,34 @@ Public Class frmMain
 
 
     Private Sub btnRunAlgo_Click(sender As Object, e As EventArgs) Handles btnRunAlgo.Click
+        Call subscribeRTData()
+    End Sub
 
+    Private Sub subscribeRTData()
+        ' Sub to get real-time data
+
+        ' Create a Contract object to hold contract details
+        Dim ContractInfo As TWSLib.IContract
+        Dim ChartOptions As TWSLib.ITagValueList
+
+        ChartOptions = AxTws1.createTagValueList()
+        ContractInfo = AxTws1.createContract()
+
+        ' Now fill the ContractInfo object with the necessary information 
+        ContractInfo.conId = 0              ' identifier
+        ' Stock symbol
+        ContractInfo.symbol = tbSymbol.Text
+        ' Security Type: Stock=STK, Option=OPT, Future=FUT, etc.
+        ContractInfo.secType = tbSecType.Text
+        ContractInfo.expiry = tbExpiry.Text
+        ' The destination of order or request. "SMART" =IB order router
+        ContractInfo.exchange = tbExchange.Text
+        ' The primary exchange where the instrument trades. 
+        ContractInfo.primaryExchange = tbPrimaryExchange.Text
+        ' The currency USD or GBP or CAD or EUR, etc.
+        ContractInfo.currency = "USD"
+
+        AxTws1.reqMktDataEx(RT_TICKER_ID_START, ContractInfo, "", 0, ChartOptions)
     End Sub
 
     Private Sub btnHistoricalData_Click(sender As Object, e As EventArgs) Handles btnHistoricalData.Click
@@ -143,5 +175,79 @@ Public Class frmMain
         '   AxTws1.cancelHistoricalData(HISTORICAL_TICKER_ID1)
         '   MsgBox("FINISHED")
         'End If
+    End Sub
+
+    Private Sub AxTws1_tickPrice(sender As Object, e As AxTWSLib._DTwsEvents_tickPriceEvent) Handles AxTws1.tickPrice
+        ' Callback method to handle new market data Price change events
+        ' When this callback method/routine is activated, price changes will 
+        ' appear in the Events objects named "e" 
+        ' Properties of "e" include:
+        ' e.id              The identifier that was set in the call to reqMktData
+        ' e.price           The latest Price
+        ' e.tickType        The tick type 1=bid,2=ask, 4=last, 6=high, 7=low, 9=close 
+        ' e.canAutoExecute  A flag 1= the order can be automatically executed
+        ' If this is a last price change, then display it
+        If (e.tickType = 4) Then
+            ' Add the latest price to the list box
+            lbRealTimeHeartBeat.Items.Add("price=" & e.price)
+            lbRealTimeHeartBeat.TopIndex = lbRealTimeHeartBeat.Items.Count - 1
+        End If
+    End Sub
+
+    Private Sub btnAccountInfo_Click(sender As Object, e As EventArgs) Handles btnAccountInfo.Click
+        ' NOTE: reqAccountUpdate is a subscription base and TWS will send updates. Not sure how often.
+        ' If account is connected to another program (such as ninja) then TWS won't take your subscription
+
+        If g_accounts_requpdate_flag < 1 Then
+
+            Call AxTws1.reqAccountUpdates(1, g_accounts(0))
+            g_accounts_requpdate_flag = 1
+            btnAccountInfo.Text = "Stop Acc Info"
+        Else
+            Call AxTws1.reqAccountUpdates(0, g_accounts(0))
+            g_accounts_requpdate_flag = 0
+            btnAccountInfo.Text = "Get Acc Info"
+        End If
+
+    End Sub
+
+    Private Sub AxTws1_updateAccountTime(sender As Object, e As AxTWSLib._DTwsEvents_updateAccountTimeEvent) Handles AxTws1.updateAccountTime
+
+        lbAccountInfo.Items.Add("UpdateAccountTime: " & e.timeStamp.ToString)
+        lbAccountInfo.TopIndex = lbAccountInfo.Items.Count - 1
+
+    End Sub
+
+    Private Sub AxTws1_updateAccountValue(sender As Object, e As AxTWSLib._DTwsEvents_updateAccountValueEvent) Handles AxTws1.updateAccountValue
+        lbAccountInfo.Items.Add(e.accountName & " " & e.key & " " & e.value)
+        lbAccountInfo.TopIndex = lbAccountInfo.Items.Count - 1
+    End Sub
+
+    Private Sub btnAccSummary_Click(sender As Object, e As EventArgs) Handles btnAccSummary.Click
+        'reqAccountSummary is a one shot request vs. reqAccountUpdates
+
+        Call AxTws1.reqAccountSummary(1, "All", "AccruedCash,BuyingPower,NetLiquidation")
+    End Sub
+
+    Private Sub AxTws1_accountSummary(sender As Object, e As AxTWSLib._DTwsEvents_accountSummaryEvent) Handles AxTws1.accountSummary
+
+        Select Case e.tag
+            Case "AccruedCash"
+                lbAccountInfo.Items.Add(e.account & "   AccruedCash = " & e.value.ToString)
+            Case "BuyingPower"
+                lbAccountInfo.Items.Add(e.account & "   BuyingPower = " & e.value.ToString)
+            Case "NetLiquidation"
+                lbAccountInfo.Items.Add(e.account & "   NetLiquidation = " & e.value.ToString)
+            Case Else
+                lbAccountInfo.Items.Add("Case Else caught")
+
+        End Select
+        lbAccountInfo.TopIndex = lbAccountInfo.Items.Count - 1
+
+
+    End Sub
+
+    Private Sub AxTws1_accountSummaryEnd(sender As Object, e As AxTWSLib._DTwsEvents_accountSummaryEndEvent) Handles AxTws1.accountSummaryEnd
+        lbAccountInfo.Items.Add("AccountSummary request end")
     End Sub
 End Class
