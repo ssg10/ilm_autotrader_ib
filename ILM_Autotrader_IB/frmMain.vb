@@ -65,11 +65,15 @@ Public Class frmMain
     End Sub
 
     Private Sub AxTws1_currentTime(sender As Object, e As AxTWSLib._DTwsEvents_currentTimeEvent) Handles AxTws1.currentTime
+
         'Dim displayString As DateTime
         'displayString = Convert.ToDateTime(e.time)
-        'lbErrorAndLog.Items.Add(displayString.ToString("g")
-        'lblServerTime.Text = displayString
+        lbErrorAndLog.Items.Add(ConvertTimestamp(e.time))
+        lblServerTime.Text = ConvertTimestamp(e.time)
     End Sub
+    Function ConvertTimestamp(ByVal timestamp as Double) As DateTime
+        Return New DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(timestamp).ToLocalTime
+    End Function
 
 
     Private Sub btnRunAlgo_Click(sender As Object, e As EventArgs) Handles btnRunAlgo.Click
@@ -249,5 +253,9 @@ Public Class frmMain
 
     Private Sub AxTws1_accountSummaryEnd(sender As Object, e As AxTWSLib._DTwsEvents_accountSummaryEndEvent) Handles AxTws1.accountSummaryEnd
         lbAccountInfo.Items.Add("AccountSummary request end")
+    End Sub
+
+    Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
     End Sub
 End Class

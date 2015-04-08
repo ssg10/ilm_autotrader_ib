@@ -147,9 +147,9 @@ Partial Class frmMain
         '
         'RectangleShape1
         '
-        Me.RectangleShape1.Location = New System.Drawing.Point(633, 6)
+        Me.RectangleShape1.Location = New System.Drawing.Point(645, 6)
         Me.RectangleShape1.Name = "RectangleShape1"
-        Me.RectangleShape1.Size = New System.Drawing.Size(272, 36)
+        Me.RectangleShape1.Size = New System.Drawing.Size(409, 36)
         '
         'LineShape2
         '
